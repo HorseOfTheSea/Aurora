@@ -15,8 +15,10 @@ using Aurora.Devices.AtmoOrb;
 using Aurora.Devices.OpenRGB;
 using Aurora.Devices.RGBNet;
 using Aurora.Modules.AudioCapture;
+using Aurora.Profiles;
 using Aurora.Settings.Overrides.Logic;
-using static Aurora.Utils.HardwareMonitor;
+using Define;
+using static Aurora.Modules.HardwareMonitor.HardwareMonitor;
 
 namespace Aurora.Settings
 {
@@ -528,7 +530,9 @@ namespace Aurora.Settings
         public bool EnableAudioCapture { get; set; } = false;
         public bool EnableMediaInfo { get; set; } = true;
         public bool EnableInputCapture { get; set; } = true;
-
+        public bool EnableHttpListener { get; set; } = true;
+        public bool EnableIpcListener { get; set; } = true;
+        public bool EnableHardwareInfo { get; set; } = true;
 
         public int UpdateDelay { get; set; } = 30;
 
@@ -578,6 +582,13 @@ namespace Aurora.Settings
             typeof(Devices.Creative.SoundBlasterXDevice),
         };
 
+        public List<BitmapAccuracy> BitmapAccuracies { get; } = new List<BitmapAccuracy>()
+        {
+            BitmapAccuracy.Good,
+            BitmapAccuracy.Okay,
+            BitmapAccuracy.Fine
+        };
+
         //Blackout and Night theme
         [JsonProperty("time_based_dimming_enabled")] public bool TimeBasedDimmingEnabled { get; set; }
         [JsonProperty("time_based_dimming_affect_games")] public bool TimeBasedDimmingAffectGames { get; set; }
@@ -607,8 +618,6 @@ namespace Aurora.Settings
         public bool HardwareMonitorUseAverageValues { get; set; } = true;
         public int HardwareMonitorCPUTemperature { get; set; } = 0;
         public int HardwareMonitorCPULoad { get; set; } = 0;
-        [JsonIgnore] public List<Sensor> HardwareMonitorCPUTemperatureList => CPU.GetSensorsTemp();
-        [JsonIgnore] public List<Sensor> HardwareMonitorCPULoadList => CPU.GetSensorsLoad();
 
         public VariableRegistry VarRegistry { get; set; } = new VariableRegistry();
 

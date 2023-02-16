@@ -6,17 +6,22 @@ using Lombok.NET;
 
 namespace Aurora.Modules;
 
-[RequiredArgsConstructor]
 public sealed partial class HttpListenerModule : IAuroraModule
 {
-    private TaskCompletionSource<AuroraHttpListener> _taskSource = new(TaskCreationOptions.RunContinuationsAsynchronously);
-    private AuroraHttpListener _listener;
+    private readonly TaskCompletionSource<AuroraHttpListener?> _taskSource = new(TaskCreationOptions.RunContinuationsAsynchronously);
+    private AuroraHttpListener? _listener;
 
-    public Task<AuroraHttpListener> HttpListener => _taskSource.Task;
+    public Task<AuroraHttpListener?> HttpListener => _taskSource.Task;
 
     [Async]
     public void Initialize()
     {
+        if (!Global.Configuration.EnableHttpListener)
+        {
+            Global.logger.Info("HttpListener is disabled");
+            _taskSource.SetResult(null);
+            return;
+        }
         try
         {
             _listener = new AuroraHttpListener(9088);
@@ -36,6 +41,7 @@ public sealed partial class HttpListenerModule : IAuroraModule
             MessageBox.Show("HttpListener could not start. Try running this program as Administrator.\r\n" +
                             "Http socket could not be created. Games using this integration won't work");
             _taskSource.SetResult(null);
+            return;
         }
         _taskSource.SetResult(_listener);
     }

@@ -3,6 +3,7 @@ using Aurora.Utils;
 using NAudio.CoreAudioApi;
 using System.Linq;
 using System.Windows.Forms;
+using Aurora.Modules.HardwareMonitor;
 using Aurora.Modules.Media;
 using Aurora.Modules.ProcessMonitor;
 using JetBrains.Annotations;
@@ -11,7 +12,10 @@ namespace Aurora.Profiles {
     /// <summary>
     /// Class representing local computer information
     /// </summary>
-    public class LocalPcInformation : Node {
+    public class LocalPcInformation : Node
+    {
+        public static IHardwareMonitor HardwareMonitor { get; set; } = new NoopHardwareMonitor();
+        
         #region Time Properties
         /// <summary>
         /// The current hour
@@ -41,11 +45,9 @@ namespace Aurora.Profiles {
 
         #region Audio Properties
 
-        [CanBeNull]
-        private MMDevice CaptureDevice => Global.CaptureProxy?.Device;
+        private MMDevice? CaptureDevice => Global.CaptureProxy?.Device;
 
-        [CanBeNull]
-        private MMDevice RenderDevice => Global.RenderProxy?.Device;
+        private MMDevice? RenderDevice => Global.RenderProxy?.Device;
 
         /// <summary>
         /// Current system volume (as set from the speaker icon)
@@ -86,19 +88,20 @@ namespace Aurora.Profiles {
 
         #region Device Properties
 
-        private readonly DualshockDevice ds4Device = Global.dev_manager.DeviceContainers.Select(d => d.Device).OfType<DualshockDevice>().FirstOrDefault();
+        private readonly DualshockDevice? _ds4Device = Global.dev_manager.DeviceContainers
+            .Select(d => d.Device).OfType<DualshockDevice>().FirstOrDefault();
         /// <summary>
         /// Battery level of a dualshock controller
         /// </summary>
-        public int DS4Battery => ds4Device?.Battery ?? -1;
+        public int DS4Battery => _ds4Device?.Battery ?? -1;
         /// <summary>
         /// Whether or not thr dualshock controller is charging
         /// </summary>
-        public bool DS4Charging => ds4Device?.Charging ?? false;
+        public bool DS4Charging => _ds4Device?.Charging ?? false;
         /// <summary>
         /// Latency of the controller in ms
         /// </summary>
-        public double DS4Latency => ds4Device?.Latency ?? -1;
+        public double DS4Latency => _ds4Device?.Latency ?? -1;
         #endregion
 
         #region CPU Properties
@@ -107,8 +110,8 @@ namespace Aurora.Profiles {
         /// </summary>
         public float CPUUsage => CPU.Usage;
 
-        private static CPUInfo _cpuInfo;
-        public CPUInfo CPU => _cpuInfo ?? (_cpuInfo = new CPUInfo());
+        private static CPUInfo? _cpuInfo;
+        public CPUInfo CPU => _cpuInfo ??= new CPUInfo();
         #endregion
 
         #region RAM Properties
@@ -127,33 +130,33 @@ namespace Aurora.Profiles {
         /// </summary>
         public long MemoryTotal => MemoryFree + MemoryUsed;
 
-        private static RAMInfo _ramInfo;
-        public RAMInfo RAM => _ramInfo ?? (_ramInfo = new RAMInfo());
+        private static RAMInfo? _ramInfo;
+        public RAMInfo RAM => _ramInfo ??= new RAMInfo();
         #endregion
 
         #region GPU Properties
-        private static GPUInfo _gpuInfo;
-        public GPUInfo GPU => _gpuInfo ?? (_gpuInfo = new GPUInfo());
+        private static GPUInfo? _gpuInfo;
+        public GPUInfo GPU => _gpuInfo ??= new GPUInfo();
         #endregion
 
         #region NET Properties
-        private static NETInfo _netInfo;
-        public NETInfo NET => _netInfo ?? (_netInfo = new NETInfo());
+        private static NETInfo? _netInfo;
+        public NETInfo NET => _netInfo ??= new NETInfo();
         #endregion
 
         #region Cursor Position
-        private static CursorPositionNode _cursorPosition;
-        public CursorPositionNode CursorPosition => _cursorPosition ?? (_cursorPosition = new CursorPositionNode());
+        private static CursorPositionNode? _cursorPosition;
+        public CursorPositionNode CursorPosition => _cursorPosition ??= new CursorPositionNode();
         #endregion
 
         #region Battery Properties
-        private static BatteryNode _battery;
-        public BatteryNode Battery => _battery ?? (_battery = new BatteryNode());
+        private static BatteryNode? _battery;
+        public BatteryNode Battery => _battery ??= new BatteryNode();
         #endregion
 
         #region Media Properties
-        private static MediaNode _media;
-        public MediaNode Media => _media ?? (_media = new MediaNode());
+        private static MediaNode? _media;
+        public MediaNode Media => _media ??= new MediaNode();
         #endregion
 
         /// <summary>
@@ -177,17 +180,17 @@ namespace Aurora.Profiles {
         /// <summary>
         /// Represents the CPU usage from 0 to 100
         /// </summary>
-        public float Usage => HardwareMonitor.CPU.CPULoad;
+        public float Usage => LocalPcInformation.HardwareMonitor.Cpu.CPULoad;
 
         /// <summary>
         /// Represents the temperature of the cpu die in celsius
         /// </summary>
-        public float Temperature => HardwareMonitor.CPU.CPUTemp;
+        public float Temperature => LocalPcInformation.HardwareMonitor.Cpu.CPUTemp;
 
         /// <summary>
         /// Represents the CPU power draw in watts
         /// </summary>
-        public float PowerUsage => HardwareMonitor.CPU.CPUPower;
+        public float PowerUsage => LocalPcInformation.HardwareMonitor.Cpu.CPUPower;
     }
 
     public class RAMInfo : Node
@@ -195,12 +198,12 @@ namespace Aurora.Profiles {
         /// <summary>
         /// Used system memory in megabytes
         /// </summary>
-        public long Used => (long)(HardwareMonitor.RAM.RAMUsed * 1024f);
+        public long Used => (long)(LocalPcInformation.HardwareMonitor.Ram.RAMUsed * 1024f);
 
         /// <summary>
         /// Free system memory in megabytes
         /// </summary>
-        public long Free => (long)(HardwareMonitor.RAM.RAMFree * 1024f);
+        public long Free => (long)(LocalPcInformation.HardwareMonitor.Ram.RAMFree * 1024f);
 
         /// <summary>
         /// Total system memory in megabytes
@@ -210,23 +213,23 @@ namespace Aurora.Profiles {
 
     public class GPUInfo : Node
     {
-        public float Usage => HardwareMonitor.GPU.GPULoad;
-        public float Temperature => HardwareMonitor.GPU.GPUCoreTemp;
-        public float PowerUsage => HardwareMonitor.GPU.GPUPower;
-        public float FanRPM => HardwareMonitor.GPU.GPUFan;
+        public float Usage => LocalPcInformation.HardwareMonitor.Gpu.GPULoad;
+        public float Temperature => LocalPcInformation.HardwareMonitor.Gpu.GPUCoreTemp;
+        public float PowerUsage => LocalPcInformation.HardwareMonitor.Gpu.GPUPower;
+        public float FanRPM => LocalPcInformation.HardwareMonitor.Gpu.GPUFan;
     }
 
     public class NETInfo : Node
     {
-        public float Usage => HardwareMonitor.NET.BandwidthUsed;
-        public float UploadSpeed => HardwareMonitor.NET.UploadSpeedBytes;
-        public float DownloadSpeed => HardwareMonitor.NET.DownloadSpeedBytes;
+        public float Usage => LocalPcInformation.HardwareMonitor.Net.BandwidthUsed;
+        public float UploadSpeed => LocalPcInformation.HardwareMonitor.Net.UploadSpeedBytes;
+        public float DownloadSpeed => LocalPcInformation.HardwareMonitor.Net.DownloadSpeedBytes;
     }
 
     public class CursorPositionNode : Node
     {
-        public float X => System.Windows.Forms.Cursor.Position.X;
-        public float Y => System.Windows.Forms.Cursor.Position.Y;
+        public float X => Cursor.Position.X;
+        public float Y => Cursor.Position.Y;
     }
 
     public class BatteryNode : Node
