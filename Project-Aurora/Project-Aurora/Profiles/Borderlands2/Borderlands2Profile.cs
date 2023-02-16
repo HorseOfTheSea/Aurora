@@ -55,6 +55,19 @@ namespace Aurora.Profiles.Borderlands2
                         _MaxVariablePath = "Player/MaximumShield"
                     },
                 }),
+                new Layer("Special Indicator", new PercentLayerHandler(){
+                    Properties = new PercentLayerHandlerProperties()
+                    {
+                        _PercentType = PercentEffectType.Progressive_Gradual,
+                        _Sequence = new KeySequence(new FreeFormObject(646.37f, 41.39f, 195f, 148.65f, -90)),
+                        _PrimaryColor = Color.FromArgb(90, 255, 0),
+                        _SecondaryColor = Color.FromArgb(25, 75, 0),
+                        _BlinkThreshold = 0.0,
+                        _BlinkDirection = false,
+                        _VariablePath = "Player/CurrentSpecial",
+                        _MaxVariablePath = "Player/MaximumSpecial",
+                    },
+                }),
                 new Layer("Borderlands 2 Background", new SolidFillLayerHandler(){
                     Properties = new SolidFillLayerHandlerProperties()
                     {

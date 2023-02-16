@@ -17,5 +17,19 @@
   "Shield_current": {
     "baseAddress": "23775880",
     "pointers": [ "52", "404", "400", "1908" ]
+  },
+
+  //some value I found to equal 100 after a couple reboots
+  //not considered consistent, shouldn't be here anyway
+  "Special_maximum": {
+    "baseAddress": "11487880",
+    "pointers": [ "544", "2996" ]
+  },
+
+  //reads as percentage
+  //if this equals 2, character's special ability is currently active
+  "Special_current": {
+    "baseAddress": "23775880",
+    "pointers": [ "52", "776", "1040" ]
   }
 }

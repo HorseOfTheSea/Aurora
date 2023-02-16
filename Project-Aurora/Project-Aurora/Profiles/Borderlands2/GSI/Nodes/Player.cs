@@ -12,6 +12,8 @@
         public float CurrentHealth = 0.0f;
         public float MaximumShield = 0.0f;
         public float CurrentShield = 0.0f;
+        public float MaximumSpecial = 0.0f;
+        public float CurrentSpecial = 0.0f;
 
         internal Player_Borderlands2(string json_data) : base(json_data)
         {
