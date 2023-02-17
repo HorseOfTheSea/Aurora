@@ -1,6 +1,8 @@
 ﻿using Aurora.EffectsEngine;
 using Aurora.Settings;
 using Aurora.Settings.Layers;
+using Aurora.Settings.Overrides.Logic;
+using Aurora.Settings.Overrides.Logic.Builder;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -55,6 +57,24 @@ namespace Aurora.Profiles.Borderlands2
                         _MaxVariablePath = "Player/MaximumShield"
                     },
                 }),
+                new Layer("Special Active", new BreathingLayerHandler(){
+                    Properties = new BreathingLayerHandlerProperties()
+                    {
+                        _Sequence = new KeySequence(new Devices.DeviceKeys[] {
+                            Devices.DeviceKeys.ESC, Devices.DeviceKeys.TILDE, Devices.DeviceKeys.TAB, Devices.DeviceKeys.CAPS_LOCK,
+                            Devices.DeviceKeys.LEFT_SHIFT, Devices.DeviceKeys.LEFT_CONTROL, Devices.DeviceKeys.LEFT_WINDOWS, Devices.DeviceKeys.LEFT_ALT,
+                            Devices.DeviceKeys.Z, Devices.DeviceKeys.SPACE, Devices.DeviceKeys.RIGHT_ALT, Devices.DeviceKeys.RIGHT_WINDOWS,
+                            Devices.DeviceKeys.APPLICATION_SELECT, Devices.DeviceKeys.RIGHT_CONTROL, Devices.DeviceKeys.RIGHT_SHIFT, Devices.DeviceKeys.ENTER,
+                            Devices.DeviceKeys.FORWARD_SLASH, Devices.DeviceKeys.BACKSLASH, Devices.DeviceKeys.BACKSPACE, Devices.DeviceKeys.ARROW_DOWN,
+                            Devices.DeviceKeys.ARROW_UP, Devices.DeviceKeys.ARROW_LEFT, Devices.DeviceKeys.ARROW_RIGHT, Devices.DeviceKeys.NUM_ZERO,
+                            Devices.DeviceKeys.NUM_PERIOD, Devices.DeviceKeys.NUM_THREE, Devices.DeviceKeys.NUM_ENTER, Devices.DeviceKeys.NUM_PLUS,
+                            Devices.DeviceKeys.NUM_MINUS,
+                        }),
+                        _PrimaryColor = Color.FromArgb(255, 255, 0),
+                        _SecondaryColor = Color.FromArgb(0, 0, 0),
+                        _EffectSpeed = 3.0f,
+                    },
+                }),
                 new Layer("Special Indicator", new PercentLayerHandler(){
                     Properties = new PercentLayerHandlerProperties()
                     {
@@ -65,7 +85,7 @@ namespace Aurora.Profiles.Borderlands2
                         _BlinkThreshold = 0.0,
                         _BlinkDirection = false,
                         _VariablePath = "Player/CurrentSpecial",
-                        _MaxVariablePath = "Player/MaximumSpecial",
+                        _MaxVariablePath = "100",
                     },
                 }),
                 new Layer("Borderlands 2 Background", new SolidFillLayerHandler(){

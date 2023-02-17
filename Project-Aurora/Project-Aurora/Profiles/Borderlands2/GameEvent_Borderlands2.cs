@@ -12,8 +12,7 @@ namespace Aurora.Profiles.Borderlands2
             gameState.Player.CurrentHealth = reader.ReadFloat(pointers.Health_current);
             gameState.Player.MaximumShield = reader.ReadFloat(pointers.Shield_maximum);
             gameState.Player.CurrentShield = reader.ReadFloat(pointers.Shield_current);
-            gameState.Player.MaximumSpecial = reader.ReadFloat(pointers.Special_maximum);
-            gameState.Player.CurrentSpecial = reader.ReadFloat(pointers.Special_current);
+            gameState.Player.CurrentSpecial = reader.ReadInt(pointers.Special_current);
         }
     }
 
@@ -22,7 +21,6 @@ namespace Aurora.Profiles.Borderlands2
         public PointerData Health_current;
         public PointerData Shield_maximum;
         public PointerData Shield_current;
-        public PointerData Special_maximum;
         public PointerData Special_current;
     }
 }
